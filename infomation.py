@@ -206,10 +206,10 @@ def api_call(last_record):
         # return: list 包含三个dist类型的列表
     """
     api_key = '6874e0c60fa74b728b9af2fa065cbc0b'
-    str_normal_info_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\str_normal_info.txt'
-    str_aqi_info_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\str_aqi_info.txt'
-    str_fut_wea_info_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\str_future_weather_info.txt'
-    str_lunar_info_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\str_lunar_info.txt'
+    str_normal_info_path = u'TXT\\str_normal_info.txt'
+    str_aqi_info_path = u'TXT\\str_aqi_info.txt'
+    str_fut_wea_info_path = u'TXT\\str_future_weather_info.txt'
+    str_lunar_info_path = u'TXT\\str_lunar_info.txt'
 
     weather_site_1 = "https://free-api.heweather.com/s6/weather?" + \
         "location=%s&key=%s" % (last_record, api_key)
@@ -310,6 +310,6 @@ def ip_location():
         sub_string = re.search('(.*?)(?=省)', string).group() + '省'
         location = re.sub(sub_string, '', raw_string)
         return location
-    except IndexError as errror:
+    except IndexError as error:
         print("无法获取位置信息")
         return

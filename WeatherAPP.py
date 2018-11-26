@@ -13,12 +13,13 @@ from infomation import ip_location
 
 provinceDict = infomation.provinceDict
 cityDict = infomation.cityDict
-record_file_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\last_record_city.txt'
+record_file_path = u'TXT\\last_record_city.txt'
 
 # TODO
 '''
 未完成：
     语音播报
+    修复最高温度为零下时由于多出负号遮盖分隔符的bug
  完成：
     增加数据库存放本次调用成功的数据, 为下次程序在无网格情况下无法调用API时使用
     增加根据本地IP地址获取本地地理位置，在打开程序时自动获取当地天气信息
@@ -132,10 +133,10 @@ class WeatherAPP:
 
     def info_display(self):
         global label_x
-        str_normal_info_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\str_normal_info.txt'
-        str_aqi_info_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\str_aqi_info.txt'
-        str_future_weather_info_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\str_future_weather_info.txt'
-        str_lunar_info_path = u'F:\\Python_Files\\Python_Files\\Tkinter\\weatherAPP_V4.1\\TXT\\str_lunar_info.txt'
+        str_normal_info_path = u'TXT\\str_normal_info.txt'
+        str_aqi_info_path = u'TXT\\str_aqi_info.txt'
+        str_future_weather_info_path = u'TXT\\str_future_weather_info.txt'
+        str_lunar_info_path = u'TXT\\str_lunar_info.txt'
 
         if infomation.internet_check():
             network_icon = self.networkAvailableIcon
