@@ -18,8 +18,9 @@ record_file_path = u'TXT\\last_record_city.txt'
 # TODO
 '''
 未完成：
-    语音播报
-    修复最高温度为零下时由于多出负号遮盖分隔符的bug
+    1. 修复最高温度为零下时由于多出负号遮盖分隔符的bug
+    2. 修复点击关闭按钮程序还在后台执行的bug
+    3. 语音播报
  完成：
     增加数据库存放本次调用成功的数据, 为下次程序在无网格情况下无法调用API时使用
     增加根据本地IP地址获取本地地理位置，在打开程序时自动获取当地天气信息
@@ -173,18 +174,18 @@ class WeatherAPP:
         self.cityName = weather_normal_info[
             "HeWeather6"][0]["basic"]["location"]
         self.backgroundCanvas.create_image(
-            3, 60, anchor='nw', image=self.cityIcon)
+            20, 40, anchor='nw', image=self.cityIcon)
         Label(self.window, bg='white', text=self.cityName, fg='DarkRed',
-              font=("微软雅黑", 14, "bold")).place(x=40, y=90)
+              font=("微软雅黑", 14, "bold")).place(x=4, y=105)
 
         # weather
         self.weather = weather_normal_info[
             "HeWeather6"][0]["now"]["cond_txt"]
         self.backgroundCanvas.create_image(
-            205, 60, anchor='nw', image=self.weatherIcon)
+            220, 60, anchor='nw', image=self.weatherIcon)
         Label(self.window, bg='white', text=self.weather,
               fg='DeepSkyBlue',
-              font=("Source Code Pro", 16, "bold")).place(x=240, y=90)
+              font=("Source Code Pro", 16, "bold")).place(x=260, y=90)
         weather_today_image = infomation.weather_icon_select(self.weather)
         self.weatherImage = ImageTk.PhotoImage(
             PIL.Image.open(weather_today_image))
@@ -266,8 +267,10 @@ class WeatherAPP:
         # temperature
         self.temp_min = weather_normal_info["HeWeather6"][
             0]["daily_forecast"][0]["tmp_min"]
+        tempMinColor = infomation.temp_color(int(self.temp_min))
         self.temp_max = weather_normal_info["HeWeather6"][
             0]["daily_forecast"][0]["tmp_max"]
+        tempMaxColor = infomation.temp_color(int(self.temp_max))
 
         self.temp_now = weather_normal_info["HeWeather6"][0]["now"]["tmp"]
         temp_now_color = infomation.temp_color(int(self.temp_now))
@@ -287,12 +290,12 @@ class WeatherAPP:
         self.backgroundCanvas.create_image(
             70, 155, anchor='nw', image=self.temperatureIcon)
         Label(self.window, bg='white', text=self.temp_min + '℃',
-              fg='DodgerBlue',
+              fg=tempMinColor,
               font=("Source Code Pro", 14, "bold")).place(x=90, y=220)
         self.backgroundCanvas.create_line(
             145, 195, 145, 215, width=3, fill='DimGrey')
         Label(self.window, bg='white', text=self.temp_max + '℃',
-              fg='DarkOrange',
+              fg=tempMaxColor,
               font=("Source Code Pro", 14, "bold")).place(x=150, y=220)
         Label(self.window, bg='white', text=self.temp_now,
               fg=temp_now_color,
