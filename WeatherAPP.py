@@ -18,13 +18,15 @@ record_file_path = u'TXT\\last_record_city.txt'
 # TODO
 '''
 未完成：
-    1. 修复最高温度为零下时由于多出负号遮盖分隔符的bug
-    2. 修复点击关闭按钮程序还在后台执行的bug
-    3. 语音播报
+    语音播报
+    7日天气预报
+    图库
  完成：
     增加数据库存放本次调用成功的数据, 为下次程序在无网格情况下无法调用API时使用
     增加根据本地IP地址获取本地地理位置，在打开程序时自动获取当地天气信息
     完善程序在有网情况下打开后突然断网后再调用API报错的问题
+    修复最高温度为零下时由于多出负号遮盖分隔符的bug
+    修复点击关闭按钮程序还在后台执行的bug
 '''
 
 
@@ -133,7 +135,6 @@ class WeatherAPP:
         # print(self.city, type(self.city))
 
     def info_display(self):
-        global label_x
         str_normal_info_path = u'TXT\\str_normal_info.txt'
         str_aqi_info_path = u'TXT\\str_aqi_info.txt'
         str_future_weather_info_path = u'TXT\\str_future_weather_info.txt'
@@ -170,38 +171,42 @@ class WeatherAPP:
         self.backgroundCanvas = Canvas(self.window, bg='white')
         self.backgroundCanvas.place(x=0, y=30, width=300, height=400)
 
-        # city location
+        # 城市
         self.cityName = weather_normal_info[
             "HeWeather6"][0]["basic"]["location"]
-        self.backgroundCanvas.create_image(
-            20, 40, anchor='nw', image=self.cityIcon)
+        # self.backgroundCanvas.create_image(
+        #     20, 40, anchor='nw', image=self.cityIcon)
+        if len(self.cityName) == 4:
+            x_pos = 10
+        elif len(self.cityName) == 3:
+            x_pos = 20
+        elif len(self.cityName) == 2:
+            x_pos = 30
         Label(self.window, bg='white', text=self.cityName, fg='DarkRed',
-              font=("微软雅黑", 14, "bold")).place(x=4, y=105)
+              font=("微软雅黑", 14, "bold")).place(x=x_pos, y=90)
 
-        # weather
+        # 天气
         self.weather = weather_normal_info[
             "HeWeather6"][0]["now"]["cond_txt"]
-        self.backgroundCanvas.create_image(
-            220, 60, anchor='nw', image=self.weatherIcon)
-        Label(self.window, bg='white', text=self.weather,
-              fg='DeepSkyBlue',
-              font=("Source Code Pro", 16, "bold")).place(x=260, y=90)
+        # self.backgroundCanvas.create_image(
+        #     220, 60, anchor='nw', image=self.weatherIcon)
+        Label(self.window, bg='white', text=self.weather, fg='DeepSkyBlue',
+              font=("Source Code Pro", 16, "bold")).place(x=230, y=90)
         weather_today_image = infomation.weather_icon_select(self.weather)
         self.weatherImage = ImageTk.PhotoImage(
             PIL.Image.open(weather_today_image))
         self.backgroundCanvas.create_image(
             100, 30, anchor='nw', image=self.weatherImage)
 
-        # humility
+        # 湿度
         self.humility = weather_normal_info[
             "HeWeather6"][0]["now"]["hum"] + '%'
         self.backgroundCanvas.create_image(
-            185, 260, anchor='nw', image=self.humilityIcon)
-        Label(self.window, bg='white', text=self.humility,
-              fg='CornflowerBlue',
-              font=("微软雅黑", 16, "bold")).place(x=220, y=290)
+            190, 260, anchor='nw', image=self.humilityIcon)
+        Label(self.window, bg='white', text=self.humility, fg='CornflowerBlue',
+              font=("微软雅黑", 16, "bold")).place(x=225, y=290)
 
-        # rain probability
+        # 降雨
         self.rain_probability = weather_normal_info[
             "HeWeather6"][0]["daily_forecast"][0]["pop"]
         if self.rain_probability is '0':
@@ -218,7 +223,7 @@ class WeatherAPP:
               bg='white', font=("微软雅黑", 16, "bold")).place(
             x=rain_label_x, y=240)
 
-        # AQI
+        # 空气质量指数
         self.pm10 = aqi_info["HeWeather6"][0]["air_now_city"]["pm10"]
         self.so2 = aqi_info["HeWeather6"][0]["air_now_city"]["so2"]
         self.o3 = aqi_info["HeWeather6"][0]["air_now_city"]["o3"]
@@ -228,25 +233,19 @@ class WeatherAPP:
         self.backgroundCanvas.create_image(
             3, 160 + 20, anchor='nw', image=self.aqiIcon)
         Label(self.window, bg='white', text=self.pm10, fg='Plum',
-              font=(
-                  "微软雅黑", 9, "bold")).place(x=42, y=210)
+              font=("微软雅黑", 9, "bold")).place(x=42, y=210)
         Label(self.window, bg='white', text=self.so2, fg='Violet',
-              font=(
-                  "微软雅黑", 9, "bold")).place(x=37, y=228)
+              font=("微软雅黑", 9, "bold")).place(x=37, y=228)
         Label(self.window, bg='white', text=self.o3, fg='Orchid',
-              font=(
-                  "微软雅黑", 9, "bold")).place(x=34, y=246)
+              font=("微软雅黑", 9, "bold")).place(x=34, y=246)
         Label(self.window, bg='white', text=self.co, fg='MediumOrchid',
-              font=(
-                  "微软雅黑", 9, "bold")).place(x=34, y=264)
+              font=("微软雅黑", 9, "bold")).place(x=34, y=264)
         Label(self.window, bg='white', text=self.no2, fg='DarkOrchid',
-              font=(
-                  "微软雅黑", 9, "bold")).place(x=37, y=282)
+              font=("微软雅黑", 9, "bold")).place(x=37, y=282)
         Label(self.window, bg='white', text=self.pm2_5, fg='DarkViolet',
-              font=(
-                  "微软雅黑", 9, "bold")).place(x=45, y=299)
+              font=("微软雅黑", 9, "bold")).place(x=45, y=299)
 
-        # airpressure
+        # 气压
         self.airPressure = weather_normal_info["HeWeather6"][
             0]["daily_forecast"][0]["pres"] + 'mb'
         self.backgroundCanvas.create_image(
@@ -255,7 +254,7 @@ class WeatherAPP:
               fg='DarkGreen',
               font=("Source Code Pro", 13, "bold")).place(x=35, y=337)
 
-        # wind
+        # 风况
         self.wind = weather_normal_info["HeWeather6"][0]["now"]["wind_dir"] + \
             weather_normal_info["HeWeather6"][0]["now"][
             "wind_sc"] + '级'
@@ -264,64 +263,129 @@ class WeatherAPP:
         Label(self.window, bg='white', text=self.wind, fg='RoyalBlue',
               font=("Source Code Pro", 12, "bold")).place(x=210, y=337)
 
-        # temperature
-        self.temp_min = weather_normal_info["HeWeather6"][
+        # 温度
+        self.minTemp = weather_normal_info["HeWeather6"][
             0]["daily_forecast"][0]["tmp_min"]
-        tempMinColor = infomation.temp_color(int(self.temp_min))
-        self.temp_max = weather_normal_info["HeWeather6"][
+        tempMinColor = infomation.temp_color(int(self.minTemp))
+        self.maxTemp = weather_normal_info["HeWeather6"][
             0]["daily_forecast"][0]["tmp_max"]
-        tempMaxColor = infomation.temp_color(int(self.temp_max))
+        tempMaxColor = infomation.temp_color(int(self.maxTemp))
+        self.curTemp = weather_normal_info["HeWeather6"][0]["now"]["tmp"]
+        temp_now_color = infomation.temp_color(int(self.curTemp))
 
-        self.temp_now = weather_normal_info["HeWeather6"][0]["now"]["tmp"]
-        temp_now_color = infomation.temp_color(int(self.temp_now))
-        standard_label_x = 110
-        temp_len = len(self.temp_now)
-        if re.search(r'([-])?', self.temp_now).group() is '-':
-            if temp_len == 3:
-                label_x = standard_label_x - 15
-            elif temp_len == 2:
-                label_x = standard_label_x
-        else:
-            if temp_len == 1:
-                label_x = standard_label_x + 15
+        # 最低温度
+        minTempLength = len(self.minTemp)
+        minTempNum = re.search(r'[\d]{1,2}', self.minTemp).group()
+
+        if minTempLength == 3:
+            minTempX = 102
+            Label(self.window, bg='white', text='℃', fg=tempMinColor,
+                  font=("Arial Rounded MT Bold", 8, "bold")).place(x=130,
+                                                                   y=220)
+            Label(self.window, bg='white', text='-', fg=tempMinColor,
+                  font=("Arial Rounded MT Bold", 10, "bold")).place(x=93,
+                                                                    y=230)
+        elif minTempLength == 2:
+            Label(self.window, bg='white', text='℃', fg=tempMinColor,
+                  font=("Arial Rounded MT Bold", 8, "bold")).place(x=130,
+                                                                   y=220)
+            if re.search(r'([-])?', self.minTemp).group() is '-':
+                minTempX = 113
+                Label(self.window, bg='white', text='-', fg=tempMinColor,
+                      font=("Arial Rounded MT Bold", 10, "bold")).place(x=100,
+                                                                        y=230)
             else:
-                label_x = standard_label_x
+                minTempX = 100
 
-        self.backgroundCanvas.create_image(
-            70, 155, anchor='nw', image=self.temperatureIcon)
-        Label(self.window, bg='white', text=self.temp_min + '℃',
-              fg=tempMinColor,
-              font=("Source Code Pro", 14, "bold")).place(x=90, y=220)
+        elif minTempLength == 1:
+            minTempX = 112
+            Label(self.window, bg='white', text='℃', fg=tempMinColor,
+                  font=("Arial Rounded MT Bold", 8, "bold")).place(x=130,
+                                                                   y=220)
+
+        Label(self.window, bg='white', text=minTempNum, fg=tempMinColor,
+              font=("Arial Rounded MT Bold", 18, "bold")).place(x=minTempX,
+                                                                y=220)
+
+        # 温度分割线
         self.backgroundCanvas.create_line(
-            145, 195, 145, 215, width=3, fill='DimGrey')
-        Label(self.window, bg='white', text=self.temp_max + '℃',
-              fg=tempMaxColor,
-              font=("Source Code Pro", 14, "bold")).place(x=150, y=220)
-        Label(self.window, bg='white', text=self.temp_now,
-              fg=temp_now_color,
-              font=("Arial Rounded MT Bold", 30, "bold")).place(x=label_x,
+            150, 192, 150, 217, width=3, fill='DimGrey')
+
+        # 最高温度
+        maxTempLength = len(self.maxTemp)
+        maxTempNum = re.search(r'[\d]{1,2}', self.maxTemp).group()
+        if maxTempLength == 3:
+            maxTempX = 160
+            Label(self.window, bg='white', text='℃', fg=tempMaxColor,
+                  font=("Arial Rounded MT Bold", 8, "bold")).place(x=188,
+                                                                   y=220)
+            Label(self.window, bg='white', text='-', fg=tempMaxColor,
+                  font=("Arial Rounded MT Bold", 10, "bold")).place(x=152,
+                                                                    y=230)
+        elif maxTempLength == 2:
+            if re.search(r'([-])?', self.minTemp).group() is '-':
+                maxTempX = 160
+                Label(self.window, bg='white', text='-', fg=tempMaxColor,
+                      font=("Arial Rounded MT Bold", 10, "bold")).place(x=152,
+                                                                        y=230)
+                Label(self.window, bg='white', text='℃', fg=tempMaxColor,
+                      font=("Arial Rounded MT Bold", 8, "bold")).place(x=180,
+                                                                       y=220)
+            else:
+                maxTempX = 157
+                Label(self.window, bg='white', text='℃', fg=tempMaxColor,
+                      font=("Arial Rounded MT Bold", 8, "bold")).place(x=188,
+                                                                       y=220)
+
+        elif maxTempLength == 1:
+            maxTempX = 160
+            Label(self.window, bg='white', text='℃', fg=tempMaxColor,
+                  font=("Arial Rounded MT Bold", 8, "bold")).place(x=180,
+                                                                   y=220)
+
+        Label(self.window, bg='white', text=maxTempNum, fg=tempMaxColor,
+              font=("Arial Rounded MT Bold", 18, "bold")).place(x=maxTempX,
+                                                                y=220)
+        # 体感温度
+        nowTempLength = len(self.curTemp)
+        if re.search(r'([-])?', self.curTemp).group() is '-':
+            if nowTempLength == 3:  # -25
+                label_x = 100
+                degLabelX = 175
+            elif nowTempLength == 2:  # 15
+                label_x = 113
+                degLabelX = 160
+        else:
+            if nowTempLength == 1:  # 5
+                label_x = 135
+                degLabelX = 160
+            else:  # 25
+                label_x = 120
+                degLabelX = 170
+        Label(self.window, bg='white', text=self.curTemp, fg=temp_now_color,
+              font=("Arial Rounded MT Bold", 34, "bold")).place(x=label_x,
                                                                 y=255)
         Label(self.window, bg='white', text='℃', fg='HotPink',
-              font=("Arial Rounded MT Bold", 18, 'bold')).place(x=163,
-                                                                y=265)
+              font=("Arial Rounded MT Bold", 18, 'bold')).place(x=degLabelX,
+                                                                y=260)
+
+        self.backgroundCanvas.create_image(
+            75, 155, anchor='nw', image=self.temperatureIcon)
 
         # lifestyle
         self.dress_suggestion = weather_normal_info[
             "HeWeather6"][0]["lifestyle"][1]["txt"]
         Label(self.window, bg='white', text=self.dress_suggestion,
-              fg='DimGrey',
-              wraplength=300, justify='left', font=('黑体', 10)).place(
-            x=3, y=380)
+              fg='DimGrey', wraplength=300, justify='left',
+              font=('黑体', 10)).place(x=3, y=380)
 
-        # future weather
+        # 未来三天天气
         self.Icon.create_line(0, 2, 300, 2, fill='Maroon', width=2)
         self.Icon.create_line(0, 27, 300, 27, fill='LightSkyBlue', width=2)
         self.Icon.create_line(0, 133, 300, 133, fill='Navy', width=2)
-        self.Icon.create_line(0, 165, 300, 165, fill='SaddleBrown',
-                              width=2)
+        self.Icon.create_line(0, 165, 300, 165, fill='SaddleBrown', width=2)
         self.Icon.create_line(3, 0, 3, 165, fill='Turquoise', width=2)
-        self.Icon.create_line(100, 0, 100, 165, fill='ForestGreen',
-                              width=2)
+        self.Icon.create_line(100, 0, 100, 165, fill='ForestGreen', width=2)
         self.Icon.create_line(200, 0, 200, 165, fill='Violet', width=2)
         self.Icon.create_line(297, 0, 297, 165, fill='OrangeRed', width=2)
         self.date_Tomorrow = infomation.chinese_date(1)
@@ -402,28 +466,35 @@ class WeatherAPP:
               fg='Maroon',
               font=("微软雅黑", 12, "bold")).place(x=215, y=565)
 
-        # 日期
-        solarDate = time.strftime("%#m{m}%#d{d}", time.localtime(
+        # 农历和国历
+        solar_date = time.strftime("%#m{m}%#d{d}", time.localtime(
             time.time())).format(m='月', d='日')
         lunarDate = lunar_date_data["data"]["cnmonth"] + "月" + lunar_date_data[
             "data"]["cnday"]
         Label(self.window, bg='white', fg='blue',
-              text=solarDate + ' 农历' + lunarDate,
+              text=solar_date + ' 农历' + lunarDate,
               font=("汉仪楷体S", 13)).place(x=50, y=602)
 
-        # refresh time
+        # 更新时间
         self.refresh_time = weather_normal_info[
             "HeWeather6"][0]["update"]["loc"][11:]
         Label(self.window, bg='white', text='更新时间:', fg='blue',
-              font=("汉仪楷体S", 10)).place(x=190, y=408)
+              font=("汉仪楷体S", 8)).place(x=195, y=413)
         Label(self.window, bg='white', text=self.refresh_time, fg='blue',
-              font=("汉仪楷体S", 11)).place(x=250, y=406)
+              font=("汉仪楷体S", 9)).place(x=250, y=412)
 
-        # network condition
+        # 网络状况
         self.Icon.create_image(265, 167, anchor='nw', image=network_icon)
 
 
 if __name__ == '__main__':
-    while 1:
+    try:
         WeatherAPP()
-        time.sleep(1800)
+        # time.sleep(1800)
+    except KeyboardInterrupt:
+        exit(0)
+    finally:
+        pass
+    # while 1:
+    #     WeatherAPP()
+    #     time.sleep(1800)
