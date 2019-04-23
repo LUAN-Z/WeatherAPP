@@ -117,6 +117,7 @@ def weather_icon_select(weather):
         "雷阵雨": "thundershower.png",
         "雨夹雪": "rainandsnow.png",
         "小雪": "snow.png",
+        "阵雪": "snow.png",
         "中雪": "snow.png",
         "大雪": "snowstorm.png",
         "暴雪": "snowstorm.png",
@@ -160,7 +161,7 @@ def chinese_date(num):
     return result
 
 
-def calendarDatae():
+def calendarDate():
     """
         # 农历日期
         # return：str 农历日期
@@ -185,25 +186,21 @@ def internet_check():
     """
     url = 'https://www.baidu.com'
     try:
-        network = requests.get(url, timeout=3)
-        # print(network)
-        if str(network.status_code) == "200":
-            # elif str(network.status_code) == "200":
+        network = requests.get(url, timeout=1)
+        if str(network.status_code) == "200":  # 网络连接正常
             return 1
+            # return 0
         else:
             return 0
-            # print("网络连接正常")
-        # print(network)
     except Exception:
-        return 0
-        # print("网络连接失败")
+        return 0  # 网络连接失败
 
 
 def api_call(last_record):
     """
         # 调用API接口
         @ last_record: str 上次程序成功调用API时保存的地名
-        # return: list 包含三个dist类型的列表
+        # return: list 包含三个list类型的列表
     """
     api_key = '6874e0c60fa74b728b9af2fa065cbc0b'
     str_normal_info_path = u'TXT\\str_normal_info.txt'
